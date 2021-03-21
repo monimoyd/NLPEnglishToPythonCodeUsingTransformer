@@ -85,16 +85,35 @@ All teh punchuations are cleaned from The combined dataset
 
 Used Pytext and BucketIterator for generating Train, Test, Validation datasets
 
+# III. Tokenization
 
+For English text I ahve used spacy English tokenizer.
 
-# III. Data Augmentation
+For Python Code, I have developed two tokenizer one for the actual tokens and second is based on token type. The custom tokenize is built on top of python built in tokenize library 
+ https://docs.python.org/3/library/tokenize.html
+ 
+ I have noted that in addition token itself teh token type also carries lot of value as while generating python the trannsformer can check right token type is generated or not. Some of teh token types are :
+ i. Identifier
+ ii. Keyword (like if, else, while)
+ iii. Function Name
+ iv. Function Declaration
+ v. Operator ( e.g. =, + )
+ vi. New Line
+ vii. Indent
+ viii. Deindent
+ 
+ In addition to token itself, I have used token type as a feature, created embedding. Also, in loss function, I have used composite function involving actual token as well as token type
+ 
+ 
+
+# IV. Data Augmentation
 
 I have used the following Data Augmentation Techniques
 
 
 ## 1. Synonym Replacement
 
-First, you could replace words in the sentence with synonyms, like so:
+First, we could replace words in the sentence with synonyms, like so:
 
 The dog slept on the mat
 
@@ -137,7 +156,7 @@ linear substructures of the word vector space.
 
 GloVe is essentially a log-bilinear model with a weighted least-squares objective. The main intuition underlying the model is the simple observation that ratios of word-word co-occurrence probabilities have the potential for encoding some form of meaning. For example, consider the co-occurrence probabilities for target words ice and steam with various probe words from the vocabulary. 
 
-[Glove](/docs/glove_example.png)
+![Glove](/docs/glove_example.png)
 
 As one might expect, ice co-occurs more frequently with solid than it does with gas, whereas steam co-occurs more frequently with gas than it does with solid. Both words co-occur with their shared property water frequently, and both co-occur with the unrelated word fashion infrequently. Only in the ratio of probabilities does noise from non-discriminative words like water and fashion cancel out, so that large values (much greater than 1) correlate well with properties specific to ice, and small values (much less than 1) correlate well with properties specific of steam. In this way, the ratio of probabilities encodes some crude form of meaning associated with the abstract concept of thermodynamic phase.
 
@@ -145,13 +164,11 @@ The training objective of GloVe is to learn word vectors such that their dot pro
 probability of co-occurrence. Owing to the fact that the logarithm of a ratio equals the difference of logarithms,
  this objective associates (the logarithm of) ratios of co-occurrence probabilities with vector differences in the word vector space. Because these ratios can encode some form of meaning, this information gets encoded as vector differences as well. For this reason, the resulting word vectors perform very well on word analogy tasks
 
-
-For both Python Toekn Corpus and English Corpus for the custom dataset + conala dataset I have training Glove Embedding 
-of 300 dimension for 100 epochs
-
+For both Python Token Corpus and English Corpus for the custom dataset + conala dataset I have training Glove Embedding 
+of 300 dimension for 100 epochs and loaded as a pretrained embedding while training
 
 
-## IV. Neurual Transformer Model
+## IV. Neural Transformer Model
 
 Neural transformer is based on famous paper “Attention is All You Need” https://arxiv.org/pdf/1706.03762.pdf.
 
@@ -162,11 +179,13 @@ https://medium.com/@monimoyd/step-by-step-machine-translation-using-transformer-
 The Neural Transformer has Encoder and Decoder. Encoder is used for encoding input English sentences using the standard
 Transformer Encoder architecture as below:
 
-TODO: Add Enocder Architecture
+!(Encoder)[/docs/Encoder.png]
 
-For Decoder, the standard architecture is modified to input i. Python Token ii. Python Token Type and iii. Positional Embedding  
-TODO: Add Decoder Architecture
+The encoder takes the english words, create embedding which is combined with positional embedding and then layers of transformers are applied to get the encoded representation
 
+For Decoder, the standard architecture is modified to input i. Output Python Token ii. Ouptut Python Token Type and iii. Position, the embedding are created for all these three and then passed throuhg masked multihead attention layers, which is then combined with encoder output and passed  through teh multihead attention layers to get the final output
+
+!(Encoder)[/docs/TransformerNewDecoder.png]
 
 
 
@@ -179,10 +198,9 @@ The cross entropy formula takes in two distributions, p(x), the true distributio
 I have used Composite Cross Entropy Loss function, which has two components:
 
 Loss1 = Cross Entroopy Loss between Predicted Python Token and Actual Python Token 
-Loss1 = Cross Entroopy Loss between Predicted Python Token Type and Actual Python Token Type
+Loss2 = Cross Entroopy Loss between Predicted Python Token Type and Actual Python Token Type
  
- 
- Total Loss I have used the formula:
+  Total Loss I have used the formula:
  
  Total Loss = 1.5 * Loss1 + Loss2
  
@@ -237,13 +255,12 @@ Encoder Dropout: 0.2
 Decoder Dropout: 0.2
 
 
-
 ### Optimizer and Scheduler Used:
 
 I have used Adam Optimizer and ReduceLROnPlateau scheudler with factor: 0.8 and patience: 10
 
 
-## VIII. 25 Generated Python Codes
+# VIII. 25 Generated Python Codes
 
 The model has been deployed in AWS EC2 and exposed through a Flask Web Application:
 
@@ -383,6 +400,43 @@ Note: - No driver code to print output hence no program output
 ![program25](/python_generated_code_screenshots/program25_screenshot.png)
 
 
+
+# X. Results: Comparion of predicted and actual actual and attention
+
+
+## i. Validation dataset
+English Description: 
+arrange string characters such that lowercase letters should come first
+
+Predicted Python Code:
+
+import pyforest
+str1 = "PyNaTive"
+lower = [ ]
+upper = [ ]
+for char in str1 :
+    if char.islower() :
+        lower.append(char)
+    else :
+        upper.append(char)
+sorted_string = ''.join(lower + upper)
+print(sorted_string)
+
+
+Actual Python Code:
+import pyforest
+str1 = "PyNaTive"
+lower = [ ]
+upper = [ ]
+for char in str1 :
+    if char.islower() :
+        lower.append(char)
+    else :
+        upper.append(char)
+sorted_string = ''.join(lower + upper)
+print(sorted_string)
+
+Attention:
 
 
 
