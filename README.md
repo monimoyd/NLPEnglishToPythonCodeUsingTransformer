@@ -179,13 +179,13 @@ https://medium.com/@monimoyd/step-by-step-machine-translation-using-transformer-
 The Neural Transformer has Encoder and Decoder. Encoder is used for encoding input English sentences using the standard
 Transformer Encoder architecture as below:
 
-!(Encoder)[/docs/Encoder.png]
+![Encoder](/docs/Encoder.png)
 
 The encoder takes the english words, create embedding which is combined with positional embedding and then layers of transformers are applied to get the encoded representation
 
 For Decoder, the standard architecture is modified to input i. Output Python Token ii. Ouptut Python Token Type and iii. Position, the embedding are created for all these three and then passed throuhg masked multihead attention layers, which is then combined with encoder output and passed  through teh multihead attention layers to get the final output
 
-!(Encoder)[/docs/TransformerNewDecoder.png]
+![Decoder](/docs/TransformerNewDecoder.png)
 
 
 
@@ -404,11 +404,11 @@ Note: - No driver code to print output hence no program output
 # X. Results: Comparion of predicted and actual actual and attention
 
 
-## i. Validation dataset
+## i. Example from Validation dataset
 English Description: 
 arrange string characters such that lowercase letters should come first
 
-Predicted Python Code:
+### Predicted Python Code:
 
 import pyforest
 str1 = "PyNaTive"
@@ -423,7 +423,8 @@ sorted_string = ''.join(lower + upper)
 print(sorted_string)
 
 
-Actual Python Code:
+### Actual Python Code:
+
 import pyforest
 str1 = "PyNaTive"
 lower = [ ]
@@ -436,8 +437,46 @@ for char in str1 :
 sorted_string = ''.join(lower + upper)
 print(sorted_string)
 
-Attention:
+### Attention:
 
+![val1_attention1](/docs/val1_attention1.png)
+![val1_attention2](/docs/val1_attention2.png)
+![val1_attention3](/docs/val1_attention3.png)
+![val1_attention4](/docs/val1_attention4.png)
+![val1_attention5](/docs/val1_attention5.png)
+![val1_attention6](/docs/val1_attention6.png)
+
+## i. Example from Test dataset
+
+English Description: 
+write python3 program for illustration of values method of dictionary
+
+### Predicted Python Code:
+
+import pyforest
+test_dict = { 'gfg' : True , 'is' : False , 'best' : True }
+print("The original dictionary is : " + str(test_dict))
+res = True
+for key , value in test_dict.items() :
+    if key in res.items() :
+        res = False
+        break
+print(f"Dictionary is {res}")
+
+
+### Actual Python Code:
+import pyforest
+dictionary = { "raj" : 2 , "striver" : 3 , "vikram" : 4 }
+print(dictionary.values())
+
+### Attention:
+
+![test1_attention1](/docs/test1_attention1.png)
+![test1_attention2](/docs/test1_attention2.png)
+![test1_attention3](/docs/test1_attention3.png)
+![test1_attention4](/docs/test1_attention4.png)
+![test1_attention5](/docs/test1_attention5.png)
+![test1_attention6](/docs/test1_attention6.png)
 
 
 
