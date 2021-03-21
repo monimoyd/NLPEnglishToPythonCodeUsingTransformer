@@ -150,22 +150,24 @@ only 5 percent of my total training set for performing Back Translation
 
 {Source: https://nlp.stanford.edu/projects/glove/]
 
-GloVe is an unsupervised learning algorithm for obtaining vector representations for words. Training is performed on 
-aggregated global word-word co-occurrence statistics from a corpus, and the resulting representations showcase interesting 
-linear substructures of the word vector space.
 
 GloVe is essentially a log-bilinear model with a weighted least-squares objective. The main intuition underlying the model is the simple observation that ratios of word-word co-occurrence probabilities have the potential for encoding some form of meaning. For example, consider the co-occurrence probabilities for target words ice and steam with various probe words from the vocabulary. 
 
 ![Glove](/docs/glove_example.png)
 
-As one might expect, ice co-occurs more frequently with solid than it does with gas, whereas steam co-occurs more frequently with gas than it does with solid. Both words co-occur with their shared property water frequently, and both co-occur with the unrelated word fashion infrequently. Only in the ratio of probabilities does noise from non-discriminative words like water and fashion cancel out, so that large values (much greater than 1) correlate well with properties specific to ice, and small values (much less than 1) correlate well with properties specific of steam. In this way, the ratio of probabilities encodes some crude form of meaning associated with the abstract concept of thermodynamic phase.
+As one might expect, ice co-occurs more frequently with solid than it does with gas, whereas steam co-occurs more frequently with gas than it does with solid. Both words co-occur with their shared property water frequently, and both co-occur with the unrelated word fashion infrequently. 
 
 The training objective of GloVe is to learn word vectors such that their dot product equals the logarithm of the words' 
-probability of co-occurrence. Owing to the fact that the logarithm of a ratio equals the difference of logarithms,
- this objective associates (the logarithm of) ratios of co-occurrence probabilities with vector differences in the word vector space. Because these ratios can encode some form of meaning, this information gets encoded as vector differences as well. For this reason, the resulting word vectors perform very well on word analogy tasks
+probability of co-occurrence. 
 
 For both Python Token Corpus and English Corpus for the custom dataset + conala dataset I have training Glove Embedding 
-of 300 dimension for 100 epochs and loaded as a pretrained embedding while training
+of dimension 300 for 100 epochs and loaded as a pretrained embedding while training the transformer.
+
+The notebooks for Glove embedding are as below:
+
+https://github.com/monimoyd/NLPEnglishToPythonCodeUsingTransformer/blob/main/Combined_GloVe_Training_300_English.ipynb
+
+https://github.com/monimoyd/NLPEnglishToPythonCodeUsingTransformer/blob/main/Combined_GloVe_Training_300_Python.ipynb
 
 
 ## IV. Neural Transformer Model
@@ -181,9 +183,9 @@ Transformer Encoder architecture as below:
 
 ![Encoder](/docs/Encoder.png)
 
-The encoder takes the english words, create embedding which is combined with positional embedding and then layers of transformers are applied to get the encoded representation
+The encoder takes the english words, create embedding (pretraine Glove embedding is used) and then pass through all the encoder tranformer layers to get the encoded output which is passed to decoder
 
-For Decoder, the standard architecture is modified to input i. Output Python Token ii. Ouptut Python Token Type and iii. Position, the embedding are created for all these three and then passed throuhg masked multihead attention layers, which is then combined with encoder output and passed  through teh multihead attention layers to get the final output
+For Decoder, the standard architecture is modified to include Output Type as one of input. So, inputs used are  i. Output Python Token ii. Ouptut Python Token Type and iii. Position, the embedding are created for all these three and then passed throuhg masked multihead attention and Layer normalization layers, which is then combined with encoder output and passed  through the multihead attention layers and layer normalization layers followed by Feed Forward layer and then softmax is applied  to get the final output
 
 ![Decoder](/docs/TransformerNewDecoder.png)
 
@@ -212,9 +214,8 @@ As per Wikipedia:
 BLEU (bilingual evaluation understudy) is an algorithm for evaluating the quality of text which has been machine-translated from one natural language to another.
 Quality is considered to be the correspondence between a machine's output and that of a human: "the closer a machine translation is to a professional human translation, the better it is" – this is the central idea behind BLEU
 
-I have used BLEU score for measuring the performance of generated Python Code from English Description
+I have used BLEU score for measuring the performance of generated Python Code from English Description.
 
-I have got a score of 41.61 on Test Dataset and 39.16 on Validation Dataset
 
 
 ## VII. Hyper parameters
@@ -254,13 +255,25 @@ Encoder Dropout: 0.2
 
 Decoder Dropout: 0.2
 
-
 ### Optimizer and Scheduler Used:
 
 I have used Adam Optimizer and ReduceLROnPlateau scheudler with factor: 0.8 and patience: 10
 
+# VIII. AWS deployment
 
-# VIII. 25 Generated Python Codes
+I have deployed the final model to the AWS EC2 and run a flask web application with wsgi. The web application allows user to input the English Description of Python code.
+
+The outputs are:
+
+1. The generated Python Code
+2. Output of program if the program after executing generates output.
+
+Youtube link of demostation of application is as below:
+
+https://youtu.be/aGqa_0eroOY 
+
+
+# IX. 25 Generated Python Codes
 
 The model has been deployed in AWS EC2 and exposed through a Flask Web Application:
 
@@ -405,87 +418,62 @@ Note: - No driver code to print output hence no program output
 
 
 ## i. Example from Validation dataset
+
+- Note: Because of github formatting issues, code will appear to be in same line
+
 English Description: 
+
 arrange string characters such that lowercase letters should come first
 
 ### Predicted Python Code:
 
 import pyforest
 str1 = "PyNaTive"
-
 lower = [ ]
-
 upper = [ ]
-
 for char in str1 :
-
-    if char.islower() :
-    
-        lower.append(char)
-        
-    else :
-    
-        upper.append(char)
-        
+    if char.islower() :    
+        lower.append(char)        
+    else :    
+        upper.append(char)        
 sorted_string = ''.join(lower + upper)
-
 print(sorted_string)
 
 
 ### Actual Python Code:
 
 str1 = "PyNaTive"
-
 lower = [ ]
-
 upper = [ ]
-
 for char in str1 :
-
-    if char.islower() :
-    
-        lower.append(char)
-        
-    else :
-    
-        upper.append(char)
-        
+    if char.islower() :    
+        lower.append(char)        
+    else :    
+        upper.append(char)        
 sorted_string = ''.join(lower + upper)
-
 print(sorted_string)
 
 ### Attention:
 
 ![val1_attention1](/docs/val1_attention1.png)
-![val1_attention2](/docs/val1_attention2.png)
-![val1_attention3](/docs/val1_attention3.png)
-![val1_attention4](/docs/val1_attention4.png)
-![val1_attention5](/docs/val1_attention5.png)
-![val1_attention6](/docs/val1_attention6.png)
 
 ## i. Example from Test dataset
 
+- Note: Because of github formatting issues, code will appear to be in same line
+-
 English Description: 
 write python3 program for illustration of values method of dictionary
 
 ### Predicted Python Code:
 
 import pyforest
-
 test_dict = { 'gfg' : True , 'is' : False , 'best' : True }
-
 print("The original dictionary is : " + str(test_dict))
-
 res = True
-
 for key , value in test_dict.items() :
-
-    if key in res.items() :
-    
-        res = False
-        
-        break
-        
+    if key in res.items() :    
+        res = False        
+        break        
 print(f"Dictionary is {res}")
 
 
@@ -497,12 +485,6 @@ print(dictionary.values())
 ### Attention:
 
 ![test1_attention1](/docs/test1_attention1.png)
-![test1_attention2](/docs/test1_attention2.png)
-![test1_attention3](/docs/test1_attention3.png)
-![test1_attention4](/docs/test1_attention4.png)
-![test1_attention5](/docs/test1_attention5.png)
-![test1_attention6](/docs/test1_attention6.png)
-
 
 # X. Metrics
 
@@ -525,6 +507,8 @@ Test BLEU score: 41.61
 The plot of Loss values for Train and validation datasets over epochs is as below:
 
 ![loss_plot](/docs/train_val_loss_plot.png)
+
+From the plot it is clear that while training loss goes down as epoch progresses byt validation loss initially goes down till 20 epochs but after that it is slightly increased
 
 
 The plot of PPL values for Train and validation over epochs is as below:
@@ -572,18 +556,32 @@ TypeError: '<' not supported between instances of 'Example' and 'Example'
 
 The issue happens as no operator is defined in sort, so I added a sort field while populating iterator
 
+# XIII. Code Structure:
+
+data_loaders/english_python_custom_dataset_loader.py - Used for loading english python custom dataset
+
+data_loaders/conala_dataset_loader.py - Used for loading conala dataset
+
+data_loaders/english_python_tokenizer.py - Used for tokenization of python code token,  python code token type and english tokens using spacy
+
+data_transformations/english_python_transformations.py - Used for various augmentation functions ( e.g. random swap, synonyms, backtranslation) for English corpus
+
+models/english_to_python_transformer.py - Transformer Model 
+
+models/glove.py - Glove Model
+
+utils/train_test_utils.py - Used for training and evaluation
+
+utils/translate_attention_utils.py - Used for translation, python code generation from tokens, attention visualization
+
+utils/plot_metrics_utils.py - Used for plotting loss and PPL values for train and validation datasets
 
 
 
 # IX. Conclusion
 
 
-In this project, I have worked on predicting Mask and Depth of given background and foregroud superimposed background images. 
-I have used reduced UNet model of only 748K parameters (i.e. less than 1M parameters) and predicted mask and depth almost
- closer to the ground truth values. Mask IoU is around 0.95.
-
-I have used various profiling tools: tensorboard, cprofile, GPU profiler as well as calculated MACS value for the model.
-
+In this project, I have applied transformer model to generate python source code from English Description. It is very challenging problem.
 This project is a great learning opportunity for me.
 
 
