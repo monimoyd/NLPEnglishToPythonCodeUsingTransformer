@@ -479,6 +479,33 @@ print(dictionary.values())
 ![test1_attention6](/docs/test1_attention6.png)
 
 
+# X. Metrics
+
+Various Metrics generated on validation and test datasets are as below:
+
+Validation Loss: 1.444
+
+Validation PPL:   4.236
+
+Validation BLEU score = 39.16
+
+Test Loss: 1.619 
+
+Test PPL:   5.046
+
+Test BLEU score: 41.61
+
+# XI. Plots of Loss and PPL
+
+The plot of Loss values for Train and validation datasets over epochs is as below:
+
+![loss_plot](/docs/train_val_loss_plot.png)
+
+
+The plot of PPL values for Train and validation over epochs is as below:
+
+![ppl_plot](/docs/train_val_ppl_plot.png)
+
 
 # IX. Conclusion
 
