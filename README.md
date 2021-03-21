@@ -556,7 +556,7 @@ TypeError: '<' not supported between instances of 'Example' and 'Example'
 
 The issue happens as no operator is defined in sort, so I added a sort field while populating iterator
 
-# XIII. Code Structure:
+# XVI. Code Structure:
 
 english_description_to_python_code_conversion_final.ipynb - Main Jupyter Notebook for training the transformer for Python code generation
 
@@ -584,7 +584,7 @@ utils/plot_metrics_utils.py - Used for plotting loss and PPL values for train an
 
 
 
-# IX. Conclusion
+# XVII. Conclusion
 
 
 In this project, I have applied transformer model to generate python source code from English Description. It is very challenging problem.
