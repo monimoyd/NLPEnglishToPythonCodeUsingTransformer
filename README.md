@@ -108,7 +108,7 @@ For Python Code, I have developed two tokenizer one for the actual tokens and se
 
 # IV. Data Augmentation
 
-I have used the following Data Augmentation Techniques
+I have used the following Data Augmentation Techniques in code:
 
 
 ## 1. Synonym Replacement
@@ -146,7 +146,8 @@ Back Translation involves translating a sentence from our target language into o
 I have  used google_trans_new Python library for this purpose. Note that google_trans_new Python library is very slow, so I used
 only 5 percent of my total training set for performing Back Translation
 
-# IV Glove Embedding
+
+# V. Glove Embedding
 
 {Source: https://nlp.stanford.edu/projects/glove/]
 
@@ -170,7 +171,7 @@ https://github.com/monimoyd/NLPEnglishToPythonCodeUsingTransformer/blob/main/Com
 https://github.com/monimoyd/NLPEnglishToPythonCodeUsingTransformer/blob/main/Combined_GloVe_Training_300_Python.ipynb
 
 
-## IV. Neural Transformer Model
+## VI. Neural Transformer Model
 
 Neural transformer is based on famous paper “Attention is All You Need” https://arxiv.org/pdf/1706.03762.pdf.
 
@@ -191,7 +192,7 @@ For Decoder, the standard architecture is modified to include Output Type as one
 
 
 
-## V. Loss Function
+## VII. Loss Function
 
 Cross-entropy loss measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label.
 
@@ -207,7 +208,7 @@ Loss2 = Cross Entroopy Loss between Predicted Python Token Type and Actual Pytho
  Total Loss = 1.5 * Loss1 + Loss2
  
  
-## VI. Metric Used
+## VIII. Metric Used
 
 As per Wikipedia:
 
@@ -218,7 +219,7 @@ I have used BLEU score for measuring the performance of generated Python Code fr
 
 
 
-## VII. Hyper parameters
+## IX. Hyper parameters
 
 The following Hyperparameters are used:
 
@@ -259,7 +260,7 @@ Decoder Dropout: 0.2
 
 I have used Adam Optimizer and ReduceLROnPlateau scheudler with factor: 0.8 and patience: 10
 
-# VIII. AWS deployment
+# X. AWS deployment
 
 I have deployed the final model to the AWS EC2 and run a flask web application with wsgi. The web application allows user to input the English Description of Python code.
 
@@ -273,7 +274,7 @@ Youtube link of demostation of application is as below:
 https://youtu.be/aGqa_0eroOY 
 
 
-# IX. 25 Generated Python Codes
+# XI. 25 Generated Python Codes
 
 The model has been deployed in AWS EC2 and exposed through a Flask Web Application:
 
@@ -363,7 +364,6 @@ Note: - No driver code to print output hence no program output
 Note: - No driver code to print output hence no program output
 
 
-
 ### 15. write a program to convert temperature from Celsius to Fahrenheit
 
 ![program15](/python_generated_code_screenshots/program15_screenshot.png)
@@ -414,7 +414,7 @@ Note: - No driver code to print output hence no program output
 
 
 
-# X. Results: Comparion of predicted and actual actual and attention
+# XII. Results: Comparion of predicted and actual actual and attention
 
 
 ## i. Example from Validation dataset
@@ -486,7 +486,7 @@ print(dictionary.values())
 
 ![test1_attention1](/docs/test1_attention1.png)
 
-# X. Metrics
+# XIII. Metrics
 
 Various Metrics generated on validation and test datasets are as below:
 
@@ -502,7 +502,7 @@ Test PPL:   5.046
 
 Test BLEU score: 41.61
 
-# XI. Plots of Loss and PPL
+# XIV. Plots of Loss and PPL
 
 The plot of Loss values for Train and validation datasets over epochs is as below:
 
@@ -515,7 +515,7 @@ The plot of PPL values for Train and validation over epochs is as below:
 
 ![ppl_plot](/docs/train_val_ppl_plot.png)
 
-# XII. Issues faced and how I addressed
+# XV. Issues faced and how I addressed
 
 ## 1. torchtext ImportError in colab
 One day, I suddently saw none of notebooks were working because of import error in torchtext. This is because of version in Colab got matched
@@ -557,6 +557,12 @@ TypeError: '<' not supported between instances of 'Example' and 'Example'
 The issue happens as no operator is defined in sort, so I added a sort field while populating iterator
 
 # XIII. Code Structure:
+
+english_description_to_python_code_conversion_final.ipynb - Main Jupyter Notebook for training the transformer for Python code generation
+
+Combined_GloVe_Training_300_Python.ipynb - Jupyter Notebook for training the Glove embedding for Python token corpus
+
+Combined_GloVe_Training_300_English.ipynb - Jupyter Notebook for  Glove embedding for English  token corpus
 
 data_loaders/english_python_custom_dataset_loader.py - Used for loading english python custom dataset
 
