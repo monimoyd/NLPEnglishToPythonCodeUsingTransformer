@@ -412,29 +412,46 @@ arrange string characters such that lowercase letters should come first
 
 import pyforest
 str1 = "PyNaTive"
+
 lower = [ ]
+
 upper = [ ]
+
 for char in str1 :
+
     if char.islower() :
+    
         lower.append(char)
+        
     else :
+    
         upper.append(char)
+        
 sorted_string = ''.join(lower + upper)
+
 print(sorted_string)
 
 
 ### Actual Python Code:
 
-import pyforest
 str1 = "PyNaTive"
+
 lower = [ ]
+
 upper = [ ]
+
 for char in str1 :
+
     if char.islower() :
+    
         lower.append(char)
+        
     else :
+    
         upper.append(char)
+        
 sorted_string = ''.join(lower + upper)
+
 print(sorted_string)
 
 ### Attention:
@@ -454,18 +471,26 @@ write python3 program for illustration of values method of dictionary
 ### Predicted Python Code:
 
 import pyforest
+
 test_dict = { 'gfg' : True , 'is' : False , 'best' : True }
+
 print("The original dictionary is : " + str(test_dict))
+
 res = True
+
 for key , value in test_dict.items() :
+
     if key in res.items() :
+    
         res = False
+        
         break
+        
 print(f"Dictionary is {res}")
 
 
 ### Actual Python Code:
-import pyforest
+
 dictionary = { "raj" : 2 , "striver" : 3 , "vikram" : 4 }
 print(dictionary.values())
 
@@ -505,6 +530,49 @@ The plot of Loss values for Train and validation datasets over epochs is as belo
 The plot of PPL values for Train and validation over epochs is as below:
 
 ![ppl_plot](/docs/train_val_ppl_plot.png)
+
+# XII. Issues faced and how I addressed
+
+## 1. torchtext ImportError in colab
+One day, I suddently saw none of notebooks were working because of import error in torchtext. This is because of version in Colab got matched
+
+Donwngraded to version below:
+
+!pip install -U torch==1.7.0
+!pip install -U torchvision==0.8.1
+!pip install -U torchtext==0.8.0
+
+Other solution is to use torchtext.legacy which I used later
+
+
+## 2. CUBLAS_STATUS_ALLOC_FAILED error :
+
+I got the Cuda error below
+
+RuntimeError: CUDA error: CUBLAS_STATUS_ALLOC_FAILED when calling `cublasCreate(handle)`
+
+I read some blogs and it was suggested to run on CPU after running on CPU:
+
+After lot of debugging I found that it was becuase of embedding dimesion issue. Basically in the decoder I have declared 
+maxlength as 100 but some cases, the training length exceeding 100 as a result position embedding fails
+  
+Links used:
+https://stackoverflow.com/questions/56010551/pytorch-embedding-index-out-of-range
+
+## 3. device-side assert triggered :
+
+RuntimeError: transform: failed to synchronize: cudaErrorAssert: device-side assert triggered
+
+For each dataset I was checking if teh target sequence length is less than MAX_OUTPUT_SEQ_LENGTH, but torchtext adds 4 more
+tokens, so length must be restricted to MAX_OUTPUT_SEQ_LENGTH-4
+
+## 4. '<' not supported :
+
+TypeError: '<' not supported between instances of 'Example' and 'Example'
+
+The issue happens as no operator is defined in sort, so I added a sort field while populating iterator
+
+
 
 
 # IX. Conclusion
