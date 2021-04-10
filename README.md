@@ -22,10 +22,9 @@ Major Highlights:
 -  Use fully API based implementation 
 -  Used Neural Transformer based architecture
 -  In decoder used token type embedding in addition to token embedding and positional embedding
--  Built custom Python Tokenizer to tokenize python code and type
+-  Built custom Python Tokenizer to tokenize python code 
 -  Used spacy English Tokenizer to tokenize english description
 -  Generated Glove Embeddings for Python Code and English separately from the scratch and used these embeddings during training
--  Used a composite cross entry loss function which combines python token loss and python token type loss
 -  Deployed the model in AWS EC2 and built a website using Flask
 
 ## Running the code
@@ -81,7 +80,7 @@ Use json loader for loading Conala dataset
 
 ## iii. Cleaning Dataset
 
-All teh punchuations are cleaned from The combined dataset
+All the punchuations are cleaned from The combined dataset
 
 Used Pytext and BucketIterator for generating Train, Test, Validation datasets
 
@@ -92,18 +91,7 @@ For English text I ahve used spacy English tokenizer.
 For Python Code, I have developed two tokenizer one for the actual tokens and second is based on token type. The custom tokenize is built on top of python built in tokenize library 
  https://docs.python.org/3/library/tokenize.html
  
- I have noted that in addition token itself teh token type also carries lot of value as while generating python the trannsformer can check right token type is generated or not. Some of teh token types are :
- i. Identifier
- ii. Keyword (like if, else, while)
- iii. Function Name
- iv. Function Declaration
- v. Operator ( e.g. =, + )
- vi. New Line
- vii. Indent
- viii. Deindent
- 
- In addition to token itself, I have used token type as a feature, created embedding. Also, in loss function, I have used composite function involving actual token as well as token type
- 
+ Using the python tokenize, parsed the python code to get various tokens like INDENT, DEDENT, Number, String, Variables etc
  
 
 # IV. Data Augmentation
@@ -186,9 +174,8 @@ Transformer Encoder architecture as below:
 
 The encoder takes the english words, create embedding (pretraine Glove embedding is used) and then pass through all the encoder tranformer layers to get the encoded output which is passed to decoder
 
-For Decoder, the standard architecture is modified to include Output Type as one of input. So, inputs used are  i. Output Python Token ii. Ouptut Python Token Type and iii. Position, the embedding are created for all these three and then passed throuhg masked multihead attention and Layer normalization layers, which is then combined with encoder output and passed  through the multihead attention layers and layer normalization layers followed by Feed Forward layer and then softmax is applied  to get the final output
+For Decoder,  Output Python Token Position, the embedding are created and then passed throuhg masked multihead attention and Layer normalization layers, which is then combined with encoder output and passed  through the multihead attention layers and layer normalization layers followed by Feed Forward layer and then softmax is applied  to get the final output
 
-![Decoder](/docs/TransformerNewDecoder.png)
 
 
 
@@ -198,14 +185,8 @@ Cross-entropy loss measures the performance of a classification model whose outp
 
 The cross entropy formula takes in two distributions, p(x), the true distribution, and q(x), the estimated distribution, defined over the discrete variable x and is given by
 
-I have used Composite Cross Entropy Loss function, which has two components:
+I have used Composite Cross Entropy Loss function
 
-Loss1 = Cross Entroopy Loss between Predicted Python Token and Actual Python Token 
-Loss2 = Cross Entroopy Loss between Predicted Python Token Type and Actual Python Token Type
- 
-  Total Loss I have used the formula:
- 
- Total Loss = 1.5 * Loss1 + Loss2
  
  
 ## VIII. Metric Used
@@ -269,7 +250,7 @@ The outputs are:
 1. The generated Python Code
 2. Output of program if the program after executing generates output.
 
-Youtube link of demostation of application is as below:
+Youtube link of demonstation of application is as below:
 
 https://youtu.be/aGqa_0eroOY 
 
@@ -494,7 +475,7 @@ Validation Loss: 1.444
 
 Validation PPL:   4.236
 
-Validation BLEU score = 39.16
+Validation BLEU score : 39.16
 
 Test Loss: 1.619 
 
@@ -568,7 +549,7 @@ data_loaders/english_python_custom_dataset_loader.py - Used for loading english 
 
 data_loaders/conala_dataset_loader.py - Used for loading conala dataset
 
-data_loaders/english_python_tokenizer.py - Used for tokenization of python code token,  python code token type and english tokens using spacy
+data_loaders/english_python_tokenizer.py - Used for tokenization of python code token,  and english tokens using spacy
 
 data_transformations/english_python_transformations.py - Used for various augmentation functions ( e.g. random swap, synonyms, backtranslation) for English corpus
 
@@ -583,9 +564,7 @@ utils/translate_attention_utils.py - Used for translation, python code generatio
 utils/plot_metrics_utils.py - Used for plotting loss and PPL values for train and validation datasets
 
 
-
 # XVII. Conclusion
-
 
 In this project, I have applied transformer model to generate python source code from English Description. It is very challenging problem.
 This project is a great learning opportunity for me.
